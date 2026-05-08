@@ -49,7 +49,7 @@ variable "organization_id" {
 }
 
 variable "platform_admin_members" {
-  description = "List of IAM members to grant platform-wide admin roles such as discoveryengine.admin (e.g. [\"user:admin@example.com\"])"
+  description = "List of IAM members granted demo-wide roles: discoveryengine.admin always; modelarmor.admin and modelarmor.floorSettingsAdmin when enable_model_armor; aiplatform.user when enable_agent_engine (e.g. [\"user:admin@example.com\"])"
   type        = list(string)
   default     = []
 }
@@ -303,12 +303,6 @@ variable "model_armor_malicious_uri_enforcement" {
   default     = "ENABLED"
 }
 
-variable "model_armor_admin_members" {
-  description = "List of IAM members to grant modelarmor.admin and modelarmor.floorSettingsAdmin roles (e.g. [\"user:admin@example.com\"])"
-  type        = list(string)
-  default     = []
-}
-
 variable "enable_model_armor_mcp_floor_setting" {
   description = "Enable Model Armor floor setting for MCP server protection (BigQuery MCP)"
   type        = bool
@@ -364,12 +358,6 @@ variable "enable_agent_engine" {
   description = "Enable the Agent Engine demo (chat API + LB for token exchange)"
   type        = bool
   default     = false
-}
-
-variable "demo_users" {
-  description = "List of user emails to grant roles/aiplatform.user for Agent Engine access"
-  type        = list(string)
-  default     = []
 }
 
 # ==============================================================================
@@ -445,11 +433,11 @@ variable "agent_gateway_authz_fail_open" {
 }
 
 variable "agent_gateway_dns_peering_config" {
-  description = "Optional DNS peering for the Agent Gateway. Lets the gateway resolve the listed `domains` (each must end with a dot) against the target VPC's private Cloud DNS zones — required for the gateway to reach upstream MCP servers by hostname (e.g. `mcp.agent-gateway.sc-ccn.xyz.` records that point at the MCP internal LB). The terraform-provider-google-beta does not yet expose `network_config.dns_peering_config`; this is applied via a post-apply REST PATCH inside the agent-gateway module."
+  description = "Optional DNS peering for the Agent Gateway. Lets the gateway resolve the listed `domains` (each must end with a dot) against the target VPC's private Cloud DNS zones — required for the gateway to reach upstream MCP servers by hostname (e.g. `mcp.agent-gateway.sc-ccn.xyz.` records that point at the MCP internal LB). `target_project` defaults to `var.project_id` and `target_network` defaults to the self-link of the VPC this module creates; override only when peering against a VPC in a different project or network. The terraform-provider-google-beta does not yet expose `network_config.dns_peering_config`; this is applied via a post-apply REST PATCH inside the agent-gateway module."
   type = object({
     domains        = list(string)
-    target_project = string
-    target_network = string
+    target_project = optional(string)
+    target_network = optional(string)
   })
   default  = null
   nullable = true

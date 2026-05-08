@@ -213,7 +213,7 @@ variable "log_sanitize_operations" {
   default     = true
 }
 
-variable "model_armor_admin_members" {
+variable "platform_admin_members" {
   description = "List of IAM members to grant modelarmor.admin and modelarmor.floorSettingsAdmin roles (e.g. [\"user:admin@example.com\"])"
   type        = list(string)
   default     = []

@@ -29,8 +29,8 @@ variable "organization_id" {
   type        = string
 }
 
-variable "demo_users" {
-  description = "List of user emails to grant roles/aiplatform.user"
+variable "platform_admin_members" {
+  description = "List of IAM members granted roles/aiplatform.user for Agent Engine access"
   type        = list(string)
   default     = []
 }

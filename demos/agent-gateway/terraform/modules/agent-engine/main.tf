@@ -92,7 +92,7 @@ resource "google_project_iam_member" "agent_identity_telemetry_writer" {
 # =============================================================================
 
 resource "google_project_iam_member" "demo_user_aiplatform_user" {
-  for_each = toset(var.demo_users)
+  for_each = toset(var.platform_admin_members)
   project  = var.project_id
   role     = "roles/aiplatform.user"
   member   = each.value

@@ -254,14 +254,14 @@ resource "google_project_iam_member" "service_extensions_model_armor_user" {
 # =============================================================================
 
 resource "google_project_iam_member" "model_armor_admin" {
-  for_each = var.enable_model_armor ? toset(var.model_armor_admin_members) : toset([])
+  for_each = var.enable_model_armor ? toset(var.platform_admin_members) : toset([])
   project  = var.project_id
   role     = "roles/modelarmor.admin"
   member   = each.value
 }
 
 resource "google_project_iam_member" "model_armor_floor_settings_admin" {
-  for_each = var.enable_model_armor ? toset(var.model_armor_admin_members) : toset([])
+  for_each = var.enable_model_armor ? toset(var.platform_admin_members) : toset([])
   project  = var.project_id
   role     = "roles/modelarmor.floorSettingsAdmin"
   member   = each.value
