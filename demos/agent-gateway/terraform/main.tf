@@ -55,8 +55,8 @@ locals {
     ? null
     : {
       domains        = local._agent_gateway_dns_peering_domains
-      target_project = try(var.agent_gateway_dns_peering_config.target_project, var.project_id)
-      target_network = try(var.agent_gateway_dns_peering_config.target_network, module.networking.network_self_link)
+      target_project = coalesce(try(var.agent_gateway_dns_peering_config.target_project, null), var.project_id)
+      target_network = coalesce(try(var.agent_gateway_dns_peering_config.target_network, null), module.networking.network_self_link)
     }
   )
 }
@@ -224,7 +224,7 @@ module "model_armor" {
   response_template_id = var.model_armor_response_template_id
 
   # Admin IAM
-  model_armor_admin_members = var.model_armor_admin_members
+  platform_admin_members = var.platform_admin_members
 
   # RAI filters
   rai_filters = var.model_armor_rai_filters
@@ -265,8 +265,8 @@ module "agent_engine" {
   project_id     = var.project_id
   project_number = module.foundation.project_number
 
-  organization_id = var.organization_id
-  demo_users      = var.demo_users
+  organization_id        = var.organization_id
+  platform_admin_members = var.platform_admin_members
 
   depends_on = [module.foundation]
 }

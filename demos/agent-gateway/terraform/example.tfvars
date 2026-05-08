@@ -12,21 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# ==============================================================================
-# CORE PROJECT CONFIGURATION
-# ==============================================================================
+# ##############################################################################
+# # REQUIRED — edit these three values before `terraform apply`.               #
+# # Every variable below this block has a sensible default tuned for the demo. #
+# ##############################################################################
 
-# GCP project ID where all resources will be created
+# GCP project ID where all resources will be created.
 project_id = "my-gcp-project-id"
 
-# GCP organization ID (numeric). Required for agent engine and org-level IAM.
+# GCP organization ID (numeric).
 organization_id = "123456789012"
 
-# Members who receive platform-wide admin roles (e.g. discoveryengine.admin)
+# Members granted demo-wide roles
 platform_admin_members = ["user:admin@example.com"]
 
+
+# ##############################################################################
+# # OPTIONAL — everything below this line has a default and is pre-tuned for   #
+# # the demo. Override only when you know you need to.                         #
+# ##############################################################################
+
 # ==============================================================================
-# CLOUD RUN PRIVATE NETWORKING — master switch for the secure MCP path
+# CLOUD RUN PRIVATE NETWORKING — feature flag for the secure MCP path
 # ==============================================================================
 #
 # false (default): MCP Cloud Run services run with `ingress = all` and the
@@ -120,9 +127,6 @@ enable_model_armor = true
 # Enable a multi-region template for Gemini Enterprise
 enable_model_armor_gemini_enterprise = true
 
-# Members who receive modelarmor.admin and modelarmor.floorSettingsAdmin roles
-model_armor_admin_members = ["user:admin@example.com"]
-
 # Prompt injection / jailbreak detection confidence threshold
 # Options: LOW_AND_ABOVE, MEDIUM_AND_ABOVE, HIGH
 model_armor_pi_jailbreak_confidence = "MEDIUM_AND_ABOVE"
@@ -141,9 +145,6 @@ model_armor_sdp_enforcement = "ENABLED"
 
 # Enable Vertex AI Agent Engine infrastructure (IAM, networking)
 enable_agent_engine = true
-
-# Users granted roles/aiplatform.user for Agent Engine access
-demo_users = ["user:developer@example.com"]
 
 # ==============================================================================
 # PSC INTERFACE - Private Service Connect for Agent Engine
@@ -192,14 +193,16 @@ agent_gateway_authz_fail_open = true
 # can reach upstream MCP servers by hostname. The `mcp.<domain>.` entry for
 # the internal LB hostnames is auto-prepended when
 # `enable_cloud_run_private_networking = true`, so this list only needs any
-# extra domains. Each domain MUST end with a trailing dot. Set to null to
-# skip entirely.
+# extra domains. Each domain MUST end with a trailing dot. Set the whole var
+# to null to skip entirely.
+#
+# `target_project` defaults to var.project_id and `target_network` defaults
+# to the VPC this module creates — only set them to peer against a different
+# project/network.
 agent_gateway_dns_peering_config = {
   domains = [
     # "run.app.",   # uncomment when enable_run_app_psc = true
   ]
-  target_project = "my-gcp-project-id"
-  target_network = "projects/my-gcp-project-id/global/networks/gateway-vpc"
 }
 
 # Provision a private DNS zone for `run.app.` (attached to the gateway VPC)
